@@ -5,3 +5,4 @@ from . import models
 admin.site.register(models.Plato)
 admin.site.register(models.Categoria)
 admin.site.register(models.Pedidos)
+admin.site.register(models.Comentario)

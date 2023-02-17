@@ -1,5 +1,8 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import Comentario
+from .models import Categoria
+from django.core import serializers
 import json
 
 #/endpoints/platos/listar (Pantalla10)
@@ -347,6 +350,55 @@ def obtenerRestaurantes(request):
     else:
         dictError = {
             "error" : "Error al recibir los platos"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
+
+# /endpoints/comentarios/listar    (pantalla sorpresa)
+def obtenerComentario(request):
+    if request.method == "GET":
+        listaComentariosQuerySet = Comentario.objects.all()
+        listaComentarios = []
+        for c in listaComentariosQuerySet:
+            listaComentarios.append({
+                "id" : c.id,
+                "nombre" : c.nombre,
+                "correo" : c.correo,
+                "resenia" : c.resenia
+            })
+
+        dictOK = {
+            "error" : "",
+            "comentarios" : listaComentarios
+        }
+        return HttpResponse(json.dumps(dictOK))
+
+    else:
+        dictError = {
+            "error": "Tipo de peticion no existe"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
+
+# pedidos/listar (Pantalla7)
+def obtenerPedidos(request):
+    if request.method == "GET":
+        listaCategoriasQuerySet = Categoria.objects.all()
+        listaCategorias =[]
+        for c in listaCategoriasQuerySet:
+            listaCategorias.append({
+                "id":c.id,
+                "nombre":c.nombre
+            })
+        
+        dictOk = {
+            "error": "",
+            "categorias": listaCategorias
+        }
+        return HttpResponse(json.dumps(dictOk))
+    else:
+        dictError = {
+            "error":"Peticion inexistente"
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
