@@ -1,18 +1,21 @@
 from django.db import models
 
 class Plato(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=50)
     url = models.URLField()
     def __str__(self):
         return self.nombre
 
 class Categoria(models.Model):
-    CATEGORIA_ESTADOS = (
-        ("A","Activo"),
-        ("I", "Inactivo")
-    )
     nombre = models.CharField(max_length=50)
-    estado = models.CharField(max_length=1,choices=CATEGORIA_ESTADOS)
+    def __str__(self):
+        return self.nombre
+
+class Restaurante(models.Model):
+    nombre = models.CharField(max_length=50)
+    url = models.CharField(max_length=200)
+    categoria = models.ManyToManyField(Categoria)
+
     def __str__(self):
         return self.nombre
 
