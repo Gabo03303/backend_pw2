@@ -1,8 +1,14 @@
 from django.db import models
 
+class Categoriap(models.Model):
+    nombre = models.CharField(max_length=50)
+    def __str__(self):
+        return self.nombre
+
 class Plato(models.Model):
     nombre = models.CharField(max_length=50)
-    url = models.URLField()
+    url = models.CharField(max_length=200)
+    Categoria = models.ForeignKey(Categoriap, on_delete=models.CASCADE, null=True)
     def __str__(self):
         return self.nombre
 
@@ -14,10 +20,12 @@ class Categoria(models.Model):
 class Restaurante(models.Model):
     nombre = models.CharField(max_length=50)
     url = models.CharField(max_length=200)
-    categoria = models.ManyToManyField(Categoria)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.nombre
+
+
 
 class Pedidos(models.Model):
     PEDIDOS_ESTADOS = (
@@ -25,7 +33,9 @@ class Pedidos(models.Model):
         ("E", "Entregado")
     )
     estado = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=50)
+    plato = models.ManyToManyField(Plato)
+    codigo = models.CharField(max_length=50)
     def __str__(self):
         return self.nombre
 

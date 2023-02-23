@@ -1,8 +1,7 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Comentario
-from .models import Categoria
-from django.core import serializers
+from .models import Comentario, Restaurante, Categoria, Categoriap, Plato, Pedidos
+
 import json
 
 #/endpoints/platos/listar (Pantalla10)
@@ -233,11 +232,35 @@ def login8(request):
         strError = json.dumps(dictError)
         return HttpResponse(strError)
 
+# /endpoints/categorias/listar (Pantalla3)
+def obtenerCategorias(request):
+    if request.method == "GET":
+        listaCategoriasQuerySet = Categoria.objects.all()
+        listaCategorias = []
+        for c in listaCategoriasQuerySet:
+            listaCategorias.append({
+                "id" : c.id,
+                "nombre" : c.nombre
+            })
+
+        dictOK = {
+            "error" : "",
+            "categorias" : listaCategorias
+        }
+        return HttpResponse(json.dumps(dictOK))
+
+    else:
+        dictError = {
+            "error": "Tipo de peticion no existe"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
 # /endpoints/restaurantes/listar    (pantalla 3)
+
 def obtenerRestaurantes(request):
     if request.method == "GET":
-        idCategoria = request.GET.get("categoria")
-
+        idCategoria = request.GET.get("categorias")
+        print(idCategoria)
         if idCategoria == None:
             dictError = {
                 "error": "Debe enviar una categoria como query paremeter."
@@ -245,101 +268,24 @@ def obtenerRestaurantes(request):
             strError = json.dumps(dictError)
             return HttpResponse(strError)
 
-
-        retaurantes = [
-            {
-                "id": 1,
-                "nombre": "Norkys",
-                "url": "https://www.deliverylima.net/wp-content/uploads/2020/07/Norkys-Logo.png",
-                "estado":"A",
-                "categoria": 4
-            },
-            {
-                "id": 2,
-                "nombre": "Pardos",
-                "url": "https://pbs.twimg.com/profile_images/1339984045137129475/R6D7MbMF_400x400.jpg",
-                "estado":"A",
-                "categoria": 4
-            },
-            {
-                "id": 3,
-                "nombre": "La LeÃ±a",
-                "url" : "http://4.bp.blogspot.com/-UW67YRpltq8/Ux81536Te4I/AAAAAAAAAwo/XOM6LOx2beY/s1600/la+le%C3%B1a+logo.jpg",
-                "estado":"A",
-                "categoria": 4
-            },
-            {
-                "id": 4,
-                "nombre": "Rosa Nautica",
-                "url" : "https://scontent.flim18-2.fna.fbcdn.net/v/t1.18169-9/28279239_1605454512824084_3047163406869284348_n.png?_nc_cat=100&ccb=1-7&_nc_sid=174925&_nc_eui2=AeHY_5FHv_AcvqXToxKpuk9LE7y1ErD6MyUTvLUSsPozJWx65YaBCM95PJgB7K3LehuqPkeRnEm6gwvFqSmtP0-k&_nc_ohc=4hy3FbPEN_IAX8erPkx&_nc_ht=scontent.flim18-2.fna&oh=00_AfAgoUwjnHXVgDbe03wcN_Qn0FsbOxmDItO9lr9yx-LeWA&oe=6415C0C0",
-                "estado":"A",
-                "categoria": 5
-            },
-            {
-                "id": 5,
-                "nombre": "Mi Barrunto",
-                "url" : "https://www.mibarrunto.com/images/logo-mi-barrunto.png",
-                "estado":"A",
-                "categoria": 5
-            },
-            {
-                "id": 6,
-                "nombre": "Embarcadero 41",
-                "url" : "https://scontent.flim18-2.fna.fbcdn.net/v/t39.30808-6/317727454_5763745607024529_6511725448466292016_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=174925&_nc_eui2=AeFNGrV3TRDxjX2T4-i6Z60pX8TmyAl-a29fxObICX5rb1nB9VavjgZQ63plXviYl2O3m4fg_K4HsR0bGBcRuh9q&_nc_ohc=zHYOowDGmYkAX8rUKxY&_nc_ht=scontent.flim18-2.fna&oh=00_AfC9364W-MfegIKlOBqtmbxF5zXZfEk1cjPa-Ajls5plfg&oe=63F44C7F",
-                "estado":"A",
-                "categoria": 5
-            },
-            {
-                "id": 7,
-                "nombre": "Mc Donalds",
-                "url" : "https://www.mcdonalds.com.pe/images/layout/mcdonalds-logo-bg-red.png",
-                "estado":"A",
-                "categoria": 1
-            },
-            {
-                "id": 8,
-                "nombre": "KFC",
-                "url" : "https://i.pinimg.com/originals/ee/fd/cf/eefdcf8f23c277bfac155152c6ab3a20.jpg",
-                "estado":"A",
-                "categoria": 1
-            },
-            {
-                "id": 9,
-                "nombre": "Bembos",
-                "url" : "https://logosenvector.com/logo/img/bembos-104.jpg",
-                "estado":"A",
-                "categoria": 1
-            },
-            {
-                "id": 10,
-                "nombre": "Pizza Hut",
-                "url" : "https://graffica.info/wp-content/uploads/2017/07/Pizza_Hut_Logo_3.png",
-                "estado":"A",
-                "categoria": 2
-            },
-            {
-                "id": 11,
-                "nombre": "Papa Jhons",
-                "url" : "https://www.deliverylima.net/wp-content/uploads/2020/07/Papa-Johns-Pizza-Logo.png",
-                "estado":"A",
-                "categoria": 2
-            },
-            {
-                "id": 12,
-                "nombre": "Mama Tomato",
-                "url" : "https://www.perurunners.com/beneficios/82/202.jpg",
-                "estado":"A",
-                "categoria": 2
-            }
-        ]
         restaurantesFiltrados = []
 
         if idCategoria == "-1":
-            restaurantesFiltrados = retaurantes
+            restaurantesQS = Restaurante.objects.all()
         else:
-            for p in retaurantes:
-                if p["categoria"] == int(idCategoria):
-                    restaurantesFiltrados.append(p)
+            restaurantesQS =    Restaurante.objects.filter(categoria__pk = idCategoria)
+        print(restaurantesQS)
+        for p in restaurantesQS:
+            if p["categoria"] == int(idCategoria):
+                restaurantesFiltrados.append({
+                    "id":p.id,
+                    "nombre":p.nombre,
+                    "url":p.url,
+                    "categoria" : {
+                        "id":p.categoria.pk,
+                        "nombre":p.categoria.nombre
+                    }
+                })
 
         dictResponse = {
             "error" : "",
@@ -353,6 +299,7 @@ def obtenerRestaurantes(request):
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
+
 
 # /endpoints/comentarios/listar    (pantalla sorpresa)
 def obtenerComentario(request):
@@ -380,25 +327,121 @@ def obtenerComentario(request):
         strError = json.dumps(dictError)
         return HttpResponse(strError)
 
-# pedidos/listar (Pantalla7)
+# pedidos/listar (Pantalla13)
 def obtenerPedidos(request):
     if request.method == "GET":
-        listaCategoriasQuerySet = Categoria.objects.all()
-        listaCategorias =[]
+        listaCategoriasQuerySet = Pedidos.objects.all()
+        listaPedidos =[]
         for c in listaCategoriasQuerySet:
-            listaCategorias.append({
-                "id":c.id,
-                "nombre":c.nombre
-            })
-        
+            listaPedidos.append({
+                "id":c.pk,
+                "nombre":c.nombre,
+                "estado" :c.estado,
+                "codigo" :c.codigo,
+            }) 
         dictOk = {
             "error": "",
-            "categorias": listaCategorias
+            "pedidos": listaPedidos
         }
         return HttpResponse(json.dumps(dictOk))
     else:
         dictError = {
             "error":"Peticion inexistente"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
+
+# categoriasp/listar (pantalla10) 
+def obtenerCategoriasP(request):
+    if request.method == "GET":
+        listaCategoriasQuerySet = Categoriap.objects.all()
+        listaCategorias = []
+        for c in listaCategoriasQuerySet:
+            listaCategorias.append({
+                "id":c.id,
+                "nombre":c.nombre
+            })
+        dictOk = {
+            "error":"",
+            "categorias" : listaCategorias
+        }
+        return HttpResponse(json.dumps(dictOk))
+    else:
+        dictError = {
+            "error": "Peticion Inexistente"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
+
+
+#(pantalla 4)
+def obtenerPeliculas(request):
+    if request.method == "GET":
+        idCategoria = request.GET.get("categoria")
+
+
+        if idCategoria == None:
+            dictError = {
+                "error": "Debe enviar una categoria como query paremeter."
+            }
+            strError = json.dumps(dictError)
+            return HttpResponse(strError)
+
+
+        peliculasFiltradas = []
+
+
+        if idCategoria == "-1" :
+            peliculasQS = Plato.objects.all()
+        else:
+            peliculasQS = Plato.objects.filter(categoria__pk=idCategoria)
+
+        for p in peliculasQS:
+            peliculasFiltradas.append({
+                "id" : p.pk,
+                "nombre" : p.nombre,
+                "url" : p.url,
+                "categoria" : {
+                    "id" : p.Categoria.pk,
+                    "nombre" : p.Categoria.nombre
+                }
+            })
+
+
+        dictResponse = {
+            "error": "",
+            "peliculas": peliculasFiltradas
+        }
+        strResponse = json.dumps(dictResponse)
+        return HttpResponse(strResponse)
+    else:
+        dictError = {
+            "error": "Tipo de peticion no existe"
+        }
+        strError = json.dumps(dictError)
+        return HttpResponse(strError)
+
+
+# (pantalla 4)
+def obtenerCategorias4(request):
+    if request.method == "GET":
+        listaCategoriasQuerySet = Categoriap.objects.all()
+        listaCategorias = []
+        for c in listaCategoriasQuerySet:
+            listaCategorias.append({
+                "id" : c.id,
+                "nombre" : c.nombre
+            })
+        dictOK = {
+            "error" : "",
+            "categorias" : listaCategorias
+        }
+        return HttpResponse(json.dumps(dictOK))
+
+
+    else:
+        dictError = {
+            "error": "Tipo de peticion no existe"
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
