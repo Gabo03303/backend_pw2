@@ -276,7 +276,7 @@ def obtenerRestaurantes(request):
             restaurantesQS =    Restaurante.objects.filter(categoria__pk = idCategoria)
         print(restaurantesQS)
         for p in restaurantesQS:
-            if p["categoria"] == int(idCategoria):
+            
                 restaurantesFiltrados.append({
                     "id":p.id,
                     "nombre":p.nombre,
@@ -379,7 +379,6 @@ def obtenerPeliculas(request):
     if request.method == "GET":
         idCategoria = request.GET.get("categoria")
 
-
         if idCategoria == None:
             dictError = {
                 "error": "Debe enviar una categoria como query paremeter."
@@ -387,9 +386,7 @@ def obtenerPeliculas(request):
             strError = json.dumps(dictError)
             return HttpResponse(strError)
 
-
         peliculasFiltradas = []
-
 
         if idCategoria == "-1" :
             peliculasQS = Plato.objects.all()
