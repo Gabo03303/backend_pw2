@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Comentario, Restaurante, Categoria, Categoriap, Plato, Pedidos
+from .models import Comentario, Restaurante, Categoria, Categoriap, Plato, Pedidos, Usuario_Cliente, Usuario_Restaurante
 
 import json
 
@@ -10,27 +10,27 @@ import json
 def loginCliente(request):
     if request.method == "POST":
         dictDataRequest = json.loads(request.body)
-        correo = dictDataRequest["correo"]
+        usuario = dictDataRequest["usuario"]
         password = dictDataRequest["password"]
 
-        # TODO: Consultar a base de datos
-        if correo == "pw@aloe.ulima.edu.pe" and password == "ulima":
-            # Correcto
-            dictOk = {
-                "error": ""
-            }
-            return HttpResponse(json.dumps(dictOk))
-        else:
-            # Error login
-            dictError = {
-                "error": "Error en login"
-            }
-            strError = json.dumps(dictError)
-            return HttpResponse(strError)
+        usuarios = Usuario_Cliente.objects.all()
 
+        for u in usuarios: 
+            if u.usuario == usuario and u.password == password:
+                dictOK = {
+                    'error': '',
+                    'userid': u.pk
+                }
+                return HttpResponse(json.dumps(dictOK))
+            else:
+                dictError = {
+                'error': 'No existe esa cuenta'
+                }
+                strError = json.dumps(dictError)
+                return HttpResponse(strError)
     else:
         dictError = {
-            "error": "Tipo de peticion no existe"
+            'error': 'Tipo de peticion no existe'
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
@@ -43,57 +43,29 @@ def loginRestaurante(request):
         usuario = dictDataRequest["usuario"]
         password = dictDataRequest["password"]
 
-        # TODO: Consultar a base de datos
-        if usuario == "restaurante" and password == "restaurante":
-            # Correcto
-            dictOk = {
-                "error": ""
-            }
-            return HttpResponse(json.dumps(dictOk))
-        else:
-            # Error login
-            dictError = {
-                "error": "Error en login"
-            }
-            strError = json.dumps(dictError)
-            return HttpResponse(strError)
+        usuarios = Usuario_Restaurante.objects.all()
 
+        for u in usuarios: 
+            if u.usuario == usuario and u.password == password:
+                dictOK = {
+                    'error': '',
+                    'userid': u.pk
+                }
+                return HttpResponse(json.dumps(dictOK))
+            else:
+                dictError = {
+                'error': 'No existe esa cuenta'
+                }
+                strError = json.dumps(dictError)
+                return HttpResponse(strError)
     else:
         dictError = {
-            "error": "Tipo de peticion no existe"
+            'error': 'Tipo de peticion no existe'
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
 
-# /endpoints/Login8
-@csrf_exempt
-def login8(request):
-    if request.method == "POST":
-        dictDataRequest = json.loads(request.body)
-        usuario = dictDataRequest["usuario"]
-        password = dictDataRequest["password"]
 
-        # TODO: Consultor a base de datos
-        if usuario == "74229263" and password == "ABC-123":
-            # correcto
-            dictOk = {
-                "error": ""
-            }
-            return HttpResponse(json.dumps(dictOk))
-        else:
-            # Error Login
-            dictError = {
-                "error": "Error en login"
-            }
-            strError = json.dumps(dictError)
-            return HttpResponse(strError)
-
-    else:
-        dictError = {
-            "error": "Tipo de peticion no existe"
-        }
-        strError = json.dumps(dictError)
-        return HttpResponse(strError)
 
 # /endpoints/categorias/listar (Pantalla3)
 def obtenerCategorias(request):
@@ -279,3 +251,4 @@ def obtenerPlatos(request):
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
+    

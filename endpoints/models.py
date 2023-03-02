@@ -1,5 +1,18 @@
 from django.db import models
 
+class Usuario_Cliente(models.Model):
+    usuario = models.CharField(max_length=25)
+    correo = models.CharField(max_length=50)
+    password = models.CharField(max_length=25)
+    def __str__(self):
+        return self.usuario
+
+class Usuario_Restaurante(models.Model):
+    usuario = models.CharField(max_length=25)
+    password = models.CharField(max_length=25)
+    def __str__(self):
+        return self.usuario
+
 class Categoriap(models.Model):
     nombre = models.CharField(max_length=50)
     def __str__(self):
@@ -24,8 +37,6 @@ class Restaurante(models.Model):
 
     def __str__(self):
         return self.nombre
-
-
 
 class Pedidos(models.Model):
     PEDIDOS_ESTADOS = (
