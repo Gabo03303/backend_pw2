@@ -11,6 +11,4 @@ urlpatterns = [
     path("pedidos/listar",views.obtenerPedidos),
     path("categoriasp/listar",views.obtenerCategoriasP),
     path("categorias/listar",views.obtenerCategorias),
-    path("categorias4/listar",views.obtenerCategorias4),
-    path("platos4/listar",views.obtenerPeliculas)
 ]
