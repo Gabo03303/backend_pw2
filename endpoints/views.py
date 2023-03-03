@@ -169,10 +169,15 @@ def obtenerPedidos(request):
         listaPedidos =[]
         for c in listaCategoriasQuerySet:
             listaPedidos.append({
-                "id":c.pk,
+                "id":c.id,
                 "nombre":c.nombre,
                 "estado" :c.estado,
                 "codigo" :c.codigo,
+                "plato" : {
+                    "id": c.plato.pk,
+                    "nombre" : c.plato.nombre,
+                    "url" : c.plato.url
+                }
             }) 
         dictOk = {
             "error": "",
@@ -251,4 +256,6 @@ def obtenerPlatos(request):
         }
         strError = json.dumps(dictError)
         return HttpResponse(strError)
+    
+
     

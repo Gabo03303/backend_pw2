@@ -4,12 +4,14 @@ class Usuario_Cliente(models.Model):
     usuario = models.CharField(max_length=25)
     correo = models.CharField(max_length=50)
     password = models.CharField(max_length=25)
+    
     def __str__(self):
         return self.usuario
 
 class Usuario_Restaurante(models.Model):
     usuario = models.CharField(max_length=25)
     password = models.CharField(max_length=25)
+
     def __str__(self):
         return self.usuario
 
@@ -24,7 +26,7 @@ class Plato(models.Model):
     Categoria = models.ForeignKey(Categoriap, on_delete=models.CASCADE, null=True)
     def __str__(self):
         return self.nombre
-
+    
 class Categoria(models.Model):
     nombre = models.CharField(max_length=50)
     def __str__(self):
@@ -45,7 +47,7 @@ class Pedidos(models.Model):
     )
     estado = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
     nombre = models.CharField(max_length=50)
-    plato = models.ManyToManyField(Plato)
+    plato = models.ForeignKey(Plato, on_delete=models.CASCADE, null=True)
     codigo = models.CharField(max_length=50)
     def __str__(self):
         return self.nombre
